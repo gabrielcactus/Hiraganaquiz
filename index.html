@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="es">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Seleccionar escritura japonesa</title>
+		<link rel="stylesheet" href="./style.css" />
+		<script src="./app.js" defer></script>
+	</head>
+	<body>
+		<main class="selector" aria-label="Opciones de escritura japonesa">
+			<label class="option">
+				<input class="option-checkbox" type="checkbox" data-option="hiragana" />
+				<span class="checkmark" aria-hidden="true"></span>
+				<span class="option-name">Hiragana</span>
+			</label>
+			<!-- Deshabilitadas temporalmente; quita disabled y option-unavailable para reactivarlas. -->
+			<label class="option option-unavailable">
+				<input class="option-checkbox" type="checkbox" data-option="katakana" disabled />
+				<span class="checkmark" aria-hidden="true"></span>
+				<span class="option-name">Katakana</span>
+			</label>
+			<label class="option option-unavailable">
+				<input class="option-checkbox" type="checkbox" data-option="kanji" disabled />
+				<span class="checkmark" aria-hidden="true"></span>
+				<span class="option-name">Kanji</span>
+			</label>
+			<p class="selection-error" role="alert" hidden></p>
+			<button class="start-button" type="button">Comenzar</button>
+		</main>
+
+		<dialog class="setup-dialog" aria-labelledby="dialog-title">
+			<header class="dialog-header">
+				<h1 id="dialog-title">¿Cómo quieres practicar?</h1>
+				<button class="close-dialog" type="button" aria-label="Cerrar">&times;</button>
+			</header>
+
+			<fieldset class="mode-group">
+				<legend>Modo</legend>
+				<div class="mode-options">
+					<label class="mode-choice">
+						<input type="radio" name="mode" value="opciones" checked />
+						<span>Opciones</span>
+					</label>
+					<label class="mode-choice">
+						<input type="radio" name="mode" value="escribir" />
+						<span>Escribir</span>
+					</label>
+				</div>
+			</fieldset>
+
+			<fieldset class="count-group">
+				<legend>Cantidad</legend>
+				<div class="count-options">
+					<label class="count-choice"><input type="radio" name="count" value="10" /><span>10</span></label>
+					<label class="count-choice"><input type="radio" name="count" value="20" /><span>20</span></label>
+					<label class="count-choice"><input type="radio" name="count" value="30" /><span>30</span></label>
+					<label class="count-choice"><input type="radio" name="count" value="46" /><span>46</span></label>
+				</div>
+			</fieldset>
+
+			<p class="setup-error" role="alert" hidden></p>
+			<button class="finish-button" type="button">Listo</button>
+		</dialog>
+
+		<section class="quiz-screen" aria-label="Práctica de hiragana" hidden>
+			<header class="quiz-header">
+				<button class="quiz-exit" type="button">Salir</button>
+				<p class="quiz-progress"></p>
+				<p class="quiz-score"></p>
+			</header>
+
+			<div class="quiz-body">
+				<div class="quiz-question">
+					<p class="quiz-prompt">¿Cómo se lee este hiragana?</p>
+					<div class="quiz-character" lang="ja" aria-live="polite"></div>
+				</div>
+
+				<div class="quiz-answer-panel">
+					<div class="answer-options" aria-label="Opciones de respuesta"></div>
+					<form class="write-answer-form" hidden>
+						<label for="latin-answer">Escribe la lectura con letras latinas</label>
+						<div class="write-answer-controls">
+							<input id="latin-answer" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" required />
+							<button class="check-answer-button" type="submit">Comprobar</button>
+						</div>
+					</form>
+					<div class="quiz-feedback" aria-live="polite" hidden>
+						<div class="feedback-heading" role="status">
+							<span class="feedback-icon" aria-hidden="true"></span>
+							<strong class="feedback-title"></strong>
+						</div>
+						<p class="feedback-detail"></p>
+						<button class="next-question-button" type="button" hidden>Continuar</button>
+					</div>
+				</div>
+			</div>
+
+			<section class="quiz-complete" aria-live="polite" hidden>
+				<h1>Ronda completada</h1>
+				<p class="final-score"></p>
+				<button class="return-button" type="button">Volver</button>
+			</section>
+		</section>
+	</body>
+</html>
