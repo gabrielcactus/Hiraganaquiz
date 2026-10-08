@@ -6,18 +6,19 @@
 		cantidad: null,
 	};
 
-	const hiraganaCharacters = [
-		{ kana: "あ", romaji: "a" }, { kana: "い", romaji: "i" }, { kana: "う", romaji: "u" }, { kana: "え", romaji: "e" }, { kana: "お", romaji: "o" },
-		{ kana: "か", romaji: "ka" }, { kana: "き", romaji: "ki" }, { kana: "く", romaji: "ku" }, { kana: "け", romaji: "ke" }, { kana: "こ", romaji: "ko" },
-		{ kana: "さ", romaji: "sa" }, { kana: "し", romaji: "shi" }, { kana: "す", romaji: "su" }, { kana: "せ", romaji: "se" }, { kana: "そ", romaji: "so" },
-		{ kana: "た", romaji: "ta" }, { kana: "ち", romaji: "chi" }, { kana: "つ", romaji: "tsu" }, { kana: "て", romaji: "te" }, { kana: "と", romaji: "to" },
-		{ kana: "な", romaji: "na" }, { kana: "に", romaji: "ni" }, { kana: "ぬ", romaji: "nu" }, { kana: "ね", romaji: "ne" }, { kana: "の", romaji: "no" },
-		{ kana: "は", romaji: "ha" }, { kana: "ひ", romaji: "hi" }, { kana: "ふ", romaji: "fu" }, { kana: "へ", romaji: "he" }, { kana: "ほ", romaji: "ho" },
-		{ kana: "ま", romaji: "ma" }, { kana: "み", romaji: "mi" }, { kana: "む", romaji: "mu" }, { kana: "め", romaji: "me" }, { kana: "も", romaji: "mo" },
-		{ kana: "や", romaji: "ya" }, { kana: "ゆ", romaji: "yu" }, { kana: "よ", romaji: "yo" },
-		{ kana: "ら", romaji: "ra" }, { kana: "り", romaji: "ri" }, { kana: "る", romaji: "ru" }, { kana: "れ", romaji: "re" }, { kana: "ろ", romaji: "ro" },
-		{ kana: "わ", romaji: "wa" }, { kana: "を", romaji: "wo" }, { kana: "ん", romaji: "n" },
-	];
+	const hiraganaRows = {
+		a: [{ kana: "あ", romaji: "a" }, { kana: "い", romaji: "i" }, { kana: "う", romaji: "u" }, { kana: "え", romaji: "e" }, { kana: "お", romaji: "o" }],
+		ka: [{ kana: "か", romaji: "ka" }, { kana: "き", romaji: "ki" }, { kana: "く", romaji: "ku" }, { kana: "け", romaji: "ke" }, { kana: "こ", romaji: "ko" }],
+		sa: [{ kana: "さ", romaji: "sa" }, { kana: "し", romaji: "shi" }, { kana: "す", romaji: "su" }, { kana: "せ", romaji: "se" }, { kana: "そ", romaji: "so" }],
+		ta: [{ kana: "た", romaji: "ta" }, { kana: "ち", romaji: "chi" }, { kana: "つ", romaji: "tsu" }, { kana: "て", romaji: "te" }, { kana: "と", romaji: "to" }],
+		na: [{ kana: "な", romaji: "na" }, { kana: "に", romaji: "ni" }, { kana: "ぬ", romaji: "nu" }, { kana: "ね", romaji: "ne" }, { kana: "の", romaji: "no" }],
+		ha: [{ kana: "は", romaji: "ha" }, { kana: "ひ", romaji: "hi" }, { kana: "ふ", romaji: "fu" }, { kana: "へ", romaji: "he" }, { kana: "ほ", romaji: "ho" }],
+		ma: [{ kana: "ま", romaji: "ma" }, { kana: "み", romaji: "mi" }, { kana: "む", romaji: "mu" }, { kana: "め", romaji: "me" }, { kana: "も", romaji: "mo" }],
+		ya: [{ kana: "や", romaji: "ya" }, { kana: "ゆ", romaji: "yu" }, { kana: "よ", romaji: "yo" }],
+		ra: [{ kana: "ら", romaji: "ra" }, { kana: "り", romaji: "ri" }, { kana: "る", romaji: "ru" }, { kana: "れ", romaji: "re" }, { kana: "ろ", romaji: "ro" }],
+		wa: [{ kana: "わ", romaji: "wa" }, { kana: "を", romaji: "wo" }, { kana: "ん", romaji: "n" }],
+	};
+	const hiraganaCharacters = Object.values(hiraganaRows).flat();
 	const romanizationAliases = {
 		し: ["si"],
 		ち: ["ti"],
@@ -47,10 +48,102 @@
 	const nextQuestionButton = document.querySelector(".next-question-button");
 	const checkAnswerButton = document.querySelector(".check-answer-button");
 	const finalScore = document.querySelector(".final-score");
+	const rowSummary = document.querySelector(".row-summary");
+	const rowDropdownToggle = document.querySelector(".row-dropdown-toggle");
+	const rowMenu = document.querySelector(".row-menu");
+	const rowCheckboxes = [...document.querySelectorAll('input[name="row"]')];
+	const countRadios = [...document.querySelectorAll('input[name="count"]')];
+	const customCountInput = document.querySelector("#custom-count");
+	const customCountControl = document.querySelector(".custom-count-control");
+	const customCountHelp = document.querySelector(".custom-count-help");
 	let questions = [];
 	let currentQuestionIndex = 0;
 	let correctAnswers = 0;
 	let answered = false;
+
+	function getSelectedCharacters() {
+		return rowCheckboxes
+			.filter((checkbox) => checkbox.checked)
+			.flatMap((checkbox) => hiraganaRows[checkbox.value]);
+	}
+
+	function updateRowSelection() {
+		const availableCount = getSelectedCharacters().length;
+		const selectedRows = rowCheckboxes.filter((checkbox) => checkbox.checked).length;
+		rowSummary.textContent = `${selectedRows} filas · ${availableCount} caracteres`;
+
+		countRadios.forEach((radio) => {
+			radio.disabled = availableCount === 0;
+			if (radio.disabled && radio.checked) {
+				radio.checked = false;
+				seleccion.cantidad = null;
+			}
+		});
+
+		const fullSetRadio = countRadios.find((radio) => radio.value === "todos");
+		const customRadio = countRadios.find((radio) => radio.value === "personalizado");
+		customCountInput.max = String(availableCount);
+		customCountInput.disabled = availableCount === 0;
+		customCountHelp.textContent = availableCount
+			? `Elige entre 1 y ${availableCount} preguntas.`
+			: "Selecciona alguna fila para indicar una cantidad.";
+		customCountControl.hidden = !customRadio.checked;
+
+		if (fullSetRadio.checked) seleccion.cantidad = availableCount;
+		if (customRadio.checked && availableCount > 0) {
+			const customCount = Number(customCountInput.value);
+			if (!Number.isInteger(customCount) || customCount < 1) {
+				seleccion.cantidad = null;
+			} else {
+				if (customCount > availableCount) customCountInput.value = String(availableCount);
+				seleccion.cantidad = Math.min(customCount, availableCount);
+			}
+		}
+	}
+
+	function positionRowMenu() {
+		if (!rowMenu.matches(":popover-open")) return;
+
+		const triggerRect = rowDropdownToggle.getBoundingClientRect();
+		const menuWidth = Math.min(triggerRect.width, window.innerWidth - 24);
+		const left = Math.max(12, Math.min(triggerRect.left, window.innerWidth - menuWidth - 12));
+		const topBelow = triggerRect.bottom + 8;
+		const menuHeight = rowMenu.offsetHeight;
+		const top = topBelow + menuHeight <= window.innerHeight - 12
+			? topBelow
+			: Math.max(12, triggerRect.top - menuHeight - 8);
+
+		rowMenu.style.width = `${menuWidth}px`;
+		rowMenu.style.left = `${left}px`;
+		rowMenu.style.top = `${top}px`;
+	}
+
+	rowDropdownToggle.addEventListener("click", () => {
+		if (rowMenu.matches(":popover-open")) {
+			rowMenu.hidePopover();
+			return;
+		}
+
+		rowMenu.showPopover();
+		positionRowMenu();
+	});
+	rowMenu.addEventListener("keydown", (event) => {
+		if (event.key === "Escape") {
+			event.preventDefault();
+			rowMenu.hidePopover();
+			rowDropdownToggle.focus();
+		}
+	});
+	rowMenu.addEventListener("toggle", (event) => {
+		const isOpen = event.newState === "open";
+		rowDropdownToggle.setAttribute("aria-expanded", String(isOpen));
+		if (isOpen) positionRowMenu();
+	});
+	window.addEventListener("resize", positionRowMenu);
+	window.addEventListener("scroll", positionRowMenu, true);
+
+	rowCheckboxes.forEach((checkbox) => checkbox.addEventListener("change", updateRowSelection));
+	updateRowSelection();
 
 	document.querySelectorAll(".option-checkbox").forEach((checkbox) => {
 		checkbox.addEventListener("change", () => {
@@ -81,9 +174,20 @@
 			setupError.hidden = false;
 			return;
 		}
-		if (!seleccion.cantidad) {
-			setupError.textContent = "Selecciona cuántos caracteres quieres practicar.";
+		if (getSelectedCharacters().length === 0) {
+			setupError.textContent = "Selecciona al menos una fila de hiragana.";
 			setupError.hidden = false;
+			return;
+		}
+		if (!seleccion.cantidad) {
+			setupError.textContent = "Indica una cantidad válida de preguntas.";
+			setupError.hidden = false;
+			return;
+		}
+		if (countRadios.find((radio) => radio.value === "personalizado").checked && !customCountInput.validity.valid) {
+			setupError.textContent = `Indica un número entre 1 y ${getSelectedCharacters().length}.`;
+			setupError.hidden = false;
+			customCountInput.focus();
 			return;
 		}
 
@@ -99,8 +203,27 @@
 
 	document.querySelectorAll('.count-choice input[name="count"]').forEach((radio) => {
 		radio.addEventListener("change", () => {
-			if (radio.checked) seleccion.cantidad = Number(radio.value);
+			if (!radio.checked) return;
+			const availableCount = getSelectedCharacters().length;
+			if (radio.value === "todos") {
+				seleccion.cantidad = availableCount;
+				customCountControl.hidden = true;
+			} else {
+				const currentCount = Number(customCountInput.value);
+				if (!Number.isInteger(currentCount) || currentCount < 1) {
+					customCountInput.value = String(Math.min(10, availableCount));
+				} else if (currentCount > availableCount) {
+					customCountInput.value = String(availableCount);
+				}
+				seleccion.cantidad = Number(customCountInput.value);
+				customCountControl.hidden = false;
+			}
 		});
+	});
+
+	customCountInput.addEventListener("input", () => {
+		seleccion.cantidad = customCountInput.validity.valid ? Number(customCountInput.value) : null;
+		setupError.hidden = true;
 	});
 
 	document.querySelector(".quiz-exit").addEventListener("click", returnToSetup);
@@ -122,7 +245,8 @@
 	}
 
 	function startQuiz() {
-		questions = shuffle(hiraganaCharacters).slice(0, seleccion.cantidad);
+		const selectedCharacters = getSelectedCharacters();
+		questions = shuffle(selectedCharacters).slice(0, Math.min(seleccion.cantidad, selectedCharacters.length));
 		currentQuestionIndex = 0;
 		correctAnswers = 0;
 		selector.hidden = true;
@@ -151,7 +275,7 @@
 			writeAnswerForm.hidden = true;
 			answerOptions.hidden = false;
 			answerOptions.replaceChildren();
-			const distractors = shuffle(hiraganaCharacters.filter((item) => item.romaji !== question.romaji)).slice(0, 3);
+			const distractors = shuffle(getSelectedCharacters().filter((item) => item.romaji !== question.romaji)).slice(0, 3);
 			const choices = shuffle([question, ...distractors]);
 
 			choices.forEach((choice) => {

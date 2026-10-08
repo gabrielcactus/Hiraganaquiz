@@ -26,6 +26,15 @@
 	box-sizing: border-box;
 }
 
+@font-face {
+	font-family: "Zen Maru Gothic";
+	font-style: normal;
+	font-weight: 500;
+	font-display: swap;
+	src: url("./fonts/zen-maru-gothic-japanese.woff2") format("woff2");
+	unicode-range: U+3001-3002, U+3041-309E, U+30A1-30FE;
+}
+
 [hidden] {
 	display: none !important;
 }
@@ -232,14 +241,132 @@ body {
 }
 
 .mode-options,
-.count-options {
+.count-options,
+.row-options {
 	display: grid;
 	grid-template-columns: repeat(2, minmax(0, 1fr));
 	gap: 10px;
 }
 
+.row-group {
+	min-width: 0;
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+
+.row-group legend {
+	margin-bottom: 6px;
+	font-size: 16px;
+	font-weight: 700;
+}
+
+.row-dropdown-toggle {
+	width: 100%;
+	min-height: 48px;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 8px 12px;
+	border: 1px solid var(--ink);
+	background: var(--surface);
+	color: var(--ink);
+	font: inherit;
+	text-align: left;
+	cursor: pointer;
+}
+
+.row-dropdown-toggle:hover {
+	background: var(--panel-hover);
+}
+
+.row-dropdown-toggle:focus-visible {
+	outline: 3px solid var(--accent);
+	outline-offset: 3px;
+}
+
+.row-summary {
+	margin-left: auto;
+	color: var(--muted);
+	font-size: 13px;
+}
+
+.row-dropdown-icon {
+	font-size: 18px;
+	transition: transform 140ms ease;
+}
+
+.row-dropdown-toggle[aria-expanded="true"] .row-dropdown-icon {
+	transform: rotate(180deg);
+}
+
+.row-menu[popover] {
+	position: fixed;
+	inset: auto;
+	max-height: min(60vh, 420px);
+	margin: 0;
+	padding: 14px;
+	overflow-y: auto;
+	border: 1px solid var(--ink);
+	background: var(--surface);
+	color: var(--ink);
+	box-shadow: 0 12px 32px rgb(0 0 0 / 24%);
+}
+
+.row-menu:popover-open {
+	display: grid;
+	gap: 10px;
+}
+
+.row-help {
+	margin: 0;
+	color: var(--muted);
+	font-size: 14px;
+}
+
+.row-options {
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.row-choice {
+	position: relative;
+	min-width: 0;
+	cursor: pointer;
+}
+
+.row-choice input {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	opacity: 0;
+}
+
+.row-choice span {
+	min-height: 40px;
+	display: grid;
+	place-items: center;
+	padding: 6px;
+	border: 1px solid var(--ink);
+	background: var(--surface);
+	font-family: "Zen Maru Gothic", "Yu Gothic", "Hiragino Kaku Gothic Pro", sans-serif;
+	font-size: 15px;
+	font-weight: 500;
+	text-align: center;
+	transition: background-color 140ms ease, color 140ms ease;
+}
+
+.row-choice input:checked + span {
+	background: var(--selected);
+	font-weight: 700;
+}
+
+.row-choice input:focus-visible + span {
+	outline: 3px solid var(--accent);
+	outline-offset: 3px;
+}
+
 .count-options {
-	grid-template-columns: repeat(4, minmax(0, 1fr));
+	grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .mode-choice,
@@ -271,6 +398,46 @@ body {
 .mode-choice input:checked + span,
 .count-choice input:checked + span {
 	background: var(--selected);
+}
+
+.count-choice input:disabled + span {
+	background: var(--disabled-bg);
+	color: var(--disabled-ink);
+	cursor: not-allowed;
+}
+
+.custom-count-control {
+	display: grid;
+	grid-template-columns: 1fr auto;
+	align-items: center;
+	gap: 8px 12px;
+	margin-top: 12px;
+}
+
+.custom-count-control label {
+	font-size: 15px;
+	font-weight: 700;
+}
+
+.custom-count-control input {
+	width: 100px;
+	min-height: 44px;
+	padding: 8px 10px;
+	border: 1px solid var(--ink);
+	font: inherit;
+	font-size: 18px;
+}
+
+.custom-count-control input:focus-visible {
+	outline: 3px solid var(--accent);
+	outline-offset: 3px;
+}
+
+.custom-count-help {
+	grid-column: 1 / -1;
+	margin: 0;
+	color: var(--muted);
+	font-size: 14px;
 }
 
 .mode-choice input:focus-visible + span,
@@ -390,8 +557,9 @@ body {
 	place-items: center;
 	border: 2px solid var(--ink);
 	background: var(--surface);
-	font-family: "Yu Gothic", "Hiragino Kaku Gothic Pro", sans-serif;
+	font-family: "Zen Maru Gothic", "Yu Gothic", "Hiragino Kaku Gothic Pro", sans-serif;
 	font-size: 140px;
+	font-weight: 500;
 	line-height: 1;
 }
 

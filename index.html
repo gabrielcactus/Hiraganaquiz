@@ -49,13 +49,40 @@
 				</div>
 			</fieldset>
 
+			<fieldset class="row-group">
+				<legend>Filas de hiragana</legend>
+				<button class="row-dropdown-toggle" type="button" aria-controls="row-menu" aria-expanded="false">
+					<span>Elegir filas</span>
+					<span class="row-summary" aria-live="polite"></span>
+					<span class="row-dropdown-icon" aria-hidden="true">▾</span>
+				</button>
+				<div class="row-menu" id="row-menu" popover="auto">
+					<p class="row-help">Activa las filas que quieres practicar.</p>
+					<div class="row-options">
+						<label class="row-choice"><input type="checkbox" name="row" value="a" checked /><span>Vocales (あ)</span></label>
+						<label class="row-choice"><input type="checkbox" name="row" value="ka" checked /><span>Ka (か)</span></label>
+						<label class="row-choice"><input type="checkbox" name="row" value="sa" checked /><span>Sa (さ)</span></label>
+						<label class="row-choice"><input type="checkbox" name="row" value="ta" checked /><span>Ta (た)</span></label>
+						<label class="row-choice"><input type="checkbox" name="row" value="na" checked /><span>Na (な)</span></label>
+						<label class="row-choice"><input type="checkbox" name="row" value="ha" checked /><span>Ha (は)</span></label>
+						<label class="row-choice"><input type="checkbox" name="row" value="ma" checked /><span>Ma (ま)</span></label>
+						<label class="row-choice"><input type="checkbox" name="row" value="ya" checked /><span>Ya (や)</span></label>
+						<label class="row-choice"><input type="checkbox" name="row" value="ra" checked /><span>Ra (ら)</span></label>
+						<label class="row-choice"><input type="checkbox" name="row" value="wa" checked /><span>Wa (わ)</span></label>
+					</div>
+				</div>
+			</fieldset>
+
 			<fieldset class="count-group">
 				<legend>Cantidad</legend>
 				<div class="count-options">
-					<label class="count-choice"><input type="radio" name="count" value="10" /><span>10</span></label>
-					<label class="count-choice"><input type="radio" name="count" value="20" /><span>20</span></label>
-					<label class="count-choice"><input type="radio" name="count" value="30" /><span>30</span></label>
-					<label class="count-choice"><input type="radio" name="count" value="46" /><span>46</span></label>
+					<label class="count-choice"><input type="radio" name="count" value="todos" /><span>Completo</span></label>
+					<label class="count-choice"><input type="radio" name="count" value="personalizado" /><span>Personalizada</span></label>
+				</div>
+				<div class="custom-count-control" hidden>
+					<label for="custom-count">Número de preguntas</label>
+					<input id="custom-count" type="number" min="1" step="1" value="10" />
+					<p class="custom-count-help"></p>
 				</div>
 			</fieldset>
 
