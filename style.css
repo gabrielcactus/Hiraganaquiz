@@ -176,6 +176,7 @@ body {
 .setup-dialog {
 	width: min(460px, calc(100vw - 24px));
 	max-height: calc(100svh - 24px);
+	max-height: calc(100dvh - 24px);
 	overflow-y: auto;
 	padding: 20px;
 	border: 2px solid var(--ink);
@@ -300,20 +301,17 @@ body {
 	transform: rotate(180deg);
 }
 
-.row-menu[popover] {
-	position: fixed;
-	inset: auto;
-	max-height: min(60vh, 420px);
-	margin: 0;
-	padding: 14px;
+.row-menu {
+	max-height: min(36svh, 280px);
+	margin-top: 10px;
+	padding: 12px;
 	overflow-y: auto;
 	border: 1px solid var(--ink);
 	background: var(--surface);
 	color: var(--ink);
-	box-shadow: 0 12px 32px rgb(0 0 0 / 24%);
 }
 
-.row-menu:popover-open {
+.row-menu:not([hidden]) {
 	display: grid;
 	gap: 10px;
 }
@@ -838,19 +836,87 @@ body {
 	}
 }
 
-@media (max-width: 699px) and (max-height: 700px) {
-	.quiz-screen {
+@media (max-width: 699px), (max-height: 500px) and (orientation: landscape) {
+	body {
+		padding: 0;
+	}
+
+	.setup-dialog {
+		width: min(460px, calc(100vw - 24px));
+		max-height: calc(100dvh - 24px);
+		padding: clamp(16px, 5vw, 20px);
+	}
+
+	.setup-dialog[open] {
+		gap: clamp(12px, 3.5vw, 16px);
+	}
+
+	.dialog-header {
 		gap: 10px;
+	}
+
+	.dialog-header h1 {
+		font-size: clamp(20px, 6vw, 24px);
+		line-height: 1.2;
+	}
+
+	.mode-options,
+	.count-options {
+		grid-template-columns: minmax(0, 1fr);
+		gap: 8px;
+	}
+
+	.mode-choice span,
+	.count-choice span {
+		min-height: 48px;
+		padding: 8px 12px;
+		font-size: clamp(16px, 4.5vw, 18px);
+		text-align: center;
+	}
+
+	.custom-count-control {
+		grid-template-columns: minmax(0, 1fr) 100px;
+	}
+
+	.custom-count-control input {
+		width: 100%;
+		font-size: 16px;
+	}
+
+	.row-dropdown-toggle {
+		min-width: 0;
+		gap: 6px;
+		padding-inline: 10px;
+	}
+
+	.row-dropdown-toggle > span:first-child {
+		flex: 0 0 auto;
+	}
+
+	.row-summary {
+		min-width: 0;
+		font-size: 12px;
+		text-align: right;
+	}
+
+	.row-menu {
+		max-height: min(35dvh, 280px);
+	}
+
+	.row-choice span {
+		min-height: 44px;
+	}
+
+	.quiz-screen {
+		width: 100%;
+		min-height: 100dvh;
+		gap: 12px;
 		padding: max(12px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
 	}
 
-	.quiz-header {
-		gap: 6px 10px;
-	}
-
 	.quiz-body {
-		grid-template-rows: minmax(210px, 1fr) auto;
-		gap: 12px;
+		grid-template-rows: minmax(210px, auto) auto;
+		gap: 14px;
 	}
 
 	.quiz-question {
@@ -859,9 +925,74 @@ body {
 	}
 
 	.quiz-character {
-		width: 176px;
-		height: 176px;
-		font-size: 110px;
+		width: min(176px, 55vw);
+		height: min(176px, 55vw);
+		font-size: clamp(96px, 34vw, 110px);
+	}
+
+	.answer-options {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 8px;
+	}
+
+	.answer-choice {
+		min-height: 56px;
+		font-size: 20px;
+	}
+
+	.write-answer-controls input {
+		font-size: 16px;
+	}
+}
+
+@media (max-width: 699px) and (max-height: 700px), (max-height: 500px) and (orientation: landscape) {
+	.setup-dialog {
+		width: min(460px, calc(100vw - 16px));
+		max-height: calc(100dvh - 16px);
+		padding: 16px;
+	}
+
+	.setup-dialog[open] {
+		gap: 14px;
+	}
+
+	.setup-dialog fieldset {
+		width: 100%;
+		min-width: 0;
+	}
+
+	.row-menu {
+		max-height: min(32dvh, 220px);
+		padding: 10px;
+	}
+
+	.row-menu:not([hidden]) {
+		gap: 8px;
+	}
+
+	.row-options {
+		gap: 8px;
+	}
+
+	.quiz-screen {
+		gap: 10px;
+		padding: max(12px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+	}
+
+	.quiz-body {
+		grid-template-rows: minmax(190px, 1fr) auto;
+		gap: 10px;
+	}
+
+	.quiz-question {
+		min-height: 190px;
+		gap: 12px;
+	}
+
+	.quiz-character {
+		width: min(160px, 48vw);
+		height: min(160px, 48vw);
+		font-size: clamp(88px, 30vw, 100px);
 	}
 
 	.answer-options {
@@ -869,8 +1000,8 @@ body {
 	}
 
 	.answer-choice {
-		min-height: 54px;
-		font-size: 22px;
+		min-height: 48px;
+		font-size: 19px;
 	}
 
 	.quiz-feedback {
@@ -883,5 +1014,35 @@ body {
 	.next-question-button {
 		min-height: 44px;
 		padding: 8px 14px;
+	}
+}
+
+@media (max-height: 500px) and (orientation: landscape) {
+	.selector {
+		width: min(100%, 420px);
+		min-height: 100dvh;
+		padding: max(12px, env(safe-area-inset-top)) max(18px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(18px, env(safe-area-inset-left));
+		grid-template-rows: repeat(3, minmax(80px, 1fr)) auto;
+		gap: 12px;
+	}
+
+	.option {
+		gap: 16px;
+		padding: 12px 16px;
+	}
+
+	.checkmark {
+		width: 52px;
+		height: 52px;
+		flex-basis: 52px;
+	}
+
+	.option-name {
+		font-size: 22px;
+	}
+
+	.start-button {
+		min-height: 48px;
+		font-size: 18px;
 	}
 }

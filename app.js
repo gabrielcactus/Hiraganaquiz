@@ -101,46 +101,21 @@
 		}
 	}
 
-	function positionRowMenu() {
-		if (!rowMenu.matches(":popover-open")) return;
-
-		const triggerRect = rowDropdownToggle.getBoundingClientRect();
-		const menuWidth = Math.min(triggerRect.width, window.innerWidth - 24);
-		const left = Math.max(12, Math.min(triggerRect.left, window.innerWidth - menuWidth - 12));
-		const topBelow = triggerRect.bottom + 8;
-		const menuHeight = rowMenu.offsetHeight;
-		const top = topBelow + menuHeight <= window.innerHeight - 12
-			? topBelow
-			: Math.max(12, triggerRect.top - menuHeight - 8);
-
-		rowMenu.style.width = `${menuWidth}px`;
-		rowMenu.style.left = `${left}px`;
-		rowMenu.style.top = `${top}px`;
-	}
-
 	rowDropdownToggle.addEventListener("click", () => {
-		if (rowMenu.matches(":popover-open")) {
-			rowMenu.hidePopover();
-			return;
+		rowMenu.hidden = !rowMenu.hidden;
+		rowDropdownToggle.setAttribute("aria-expanded", String(!rowMenu.hidden));
+		if (!rowMenu.hidden && window.matchMedia("(max-width: 699px), (max-height: 500px) and (orientation: landscape)").matches) {
+			rowMenu.scrollIntoView({ block: "nearest" });
 		}
-
-		rowMenu.showPopover();
-		positionRowMenu();
 	});
 	rowMenu.addEventListener("keydown", (event) => {
 		if (event.key === "Escape") {
 			event.preventDefault();
-			rowMenu.hidePopover();
+			rowMenu.hidden = true;
+			rowDropdownToggle.setAttribute("aria-expanded", "false");
 			rowDropdownToggle.focus();
 		}
 	});
-	rowMenu.addEventListener("toggle", (event) => {
-		const isOpen = event.newState === "open";
-		rowDropdownToggle.setAttribute("aria-expanded", String(isOpen));
-		if (isOpen) positionRowMenu();
-	});
-	window.addEventListener("resize", positionRowMenu);
-	window.addEventListener("scroll", positionRowMenu, true);
 
 	rowCheckboxes.forEach((checkbox) => checkbox.addEventListener("change", updateRowSelection));
 	updateRowSelection();
